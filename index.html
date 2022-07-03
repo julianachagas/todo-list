@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo list</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      src="https://kit.fontawesome.com/8e7b84f57c.js"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="container">
+      <h1 class="title">
+        <span class="text-highlight1">to</span
+        ><span class="text-highlight2">do</span> list
+      </h1>
+      <button
+        type="button"
+        id="toggle-theme"
+        class="btn"
+        aria-label="Switch to dark theme"
+        aria-pressed="false"
+      >
+        <i class="fa-solid fa-moon"></i>
+      </button>
+    </header>
+    <main class="container">
+      <div class="empty-list-instruction">
+        <i class="fa-solid fa-list-check"></i>
+        <p>Your list is empty. Add your first todo in the field below.</p>
+        <p>What do you want to get done today?</p>
+      </div>
+      <div class="todo-wrapper">
+        <form id="search-form">
+          <label for="search-todo" class="visuallyhidden">Search todos</label>
+          <input
+            type="text"
+            name="search"
+            id="search-todo"
+            placeholder="search todos..."
+          />
+        </form>
+        <nav class="todo-nav">
+          <ul>
+            <li data-target="#all-todos" class="active"><a href="">All</a></li>
+            <li data-target="#pending-todos"><a href="">Pending</a></li>
+            <li data-target="#completed-todos"><a href="">Completed</a></li>
+          </ul>
+          <button id="clear-list" class="btn">Clear list</button>
+        </nav>
+        <ul class="todo-list" id="all-todos">
+          <!-- <li class="todo-item">
+            <label>
+              <input type="checkbox" />
+              <span>to do</span>
+            </label>
+            <button class="delete-btn btn" aria-label="Delete todo">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </li> -->
+        </ul>
+      </div>
+      <form id="add-todo-form">
+        <label for="add-todo" class="visuallyhidden">Add a new todo:</label>
+        <div class="add-field">
+          <input
+            type="text"
+            name="add-todo"
+            id="add-todo"
+            placeholder="add a new todo..."
+          />
+          <button type="submit" class="btn" id="add-btn">ADD</button>
+        </div>
+      </form>
+    </main>
+    <footer>
+      Made with &#9825; by
+      <a href="http://github.com/julianachagas" target="_blank"
+        >Juliana Chagas</a
+      >
+    </footer>
+    <script src="script.js"></script>
+  </body>
+</html>
