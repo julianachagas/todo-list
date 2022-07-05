@@ -131,8 +131,7 @@ header .btn {
   color: var(--light-gray-text);
   line-height: 1.5;
   font-size: 1.5rem;
-  padding: 5rem 2rem;
-  display: none;
+  padding: 5rem 2rem;  
 }
 
 .empty-list-instruction i {
