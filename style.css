@@ -16,7 +16,6 @@ body {
   --text-highlight-1: #7b3db8;
   --text-highlight-2: #055ff0;
   --light-gray-text: #767676;
-  --gray-line: #dfdfdf;
   font-family: 'Poppins', sans-serif;
   background-color: var(--background-color);
   color: var(--text-color);
@@ -36,7 +35,6 @@ body.dark-mode {
   --text-highlight-1: #9c76f0;
   --text-highlight-2: #72a6fc;
   --light-gray-text: #9b9b9b;
-  --gray-line: #4c4c4c;
 }
 
 input,
@@ -131,7 +129,7 @@ header .btn {
   color: var(--light-gray-text);
   line-height: 1.5;
   font-size: 1.5rem;
-  padding: 5rem 2rem;  
+  padding: 5rem 2rem;
 }
 
 .empty-list-instruction i {
@@ -139,8 +137,7 @@ header .btn {
   margin-bottom: 2rem;
 }
 
-.empty-list-instruction,
-.todo-list {
+.empty-list-instruction {
   background-color: var(--input-color);
   border-radius: 7px;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px,
@@ -164,11 +161,18 @@ header .btn {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  font-size: 1.8rem;
+  background-color: var(--input-color);
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px,
+    rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
+  border-radius: 3px;
+}
+
+.todo-item.hide {
+  display: none;
 }
 
 .todo-item + .todo-item {
-  border-top: 1px solid var(--gray-line);
+  margin-top: 1px;
 }
 
 .todo-item label {
@@ -180,7 +184,7 @@ header .btn {
   margin-right: 1rem;
 }
 
-.todo-item input:checked + span {
+.todo-item.complete {
   text-decoration: line-through;
   color: var(--light-gray-text);
 }
@@ -199,21 +203,22 @@ header .btn {
   gap: 2rem;
 }
 
-.todo-nav li {
+.todo-nav ul button {
+  border: none;
+  background-color: transparent;
   border-bottom: 1px solid transparent;
-}
-
-.todo-nav a {
   color: var(--text-color);
+  cursor: pointer;
 }
 
-.todo-nav li.active,
-.todo-nav li:hover {
+.todo-nav ul button.active {
   border-color: var(--text-highlight-1);
+  color: var(--text-highlight-1);
 }
 
-.todo-nav li.active a,
-.todo-nav li a:hover {
+.todo-nav ul button.active,
+.todo-nav ul button:hover {
+  border-color: var(--text-highlight-1);
   color: var(--text-highlight-1);
 }
 
@@ -256,6 +261,35 @@ body.dark-mode .add-field .btn:hover {
   color: #000;
 }
 
+.alert-error,
+.alert-success {
+  margin-top: 1rem;
+  margin-left: 0.5rem;
+  font-size: 1.5rem;
+  display: none;
+}
+
+.alert-error i,
+.alert-success i {
+  margin-right: 0.5rem;
+}
+
+.alert-error {
+  color: red;
+}
+
+.alert-success {
+  color: #008000;
+}
+
+body.dark-mode .alert-error {
+  color: #ff4d4d;
+}
+
+body.dark-mode .alert-success {
+  color: #00a800;
+}
+
 footer {
   margin-top: auto;
   padding: 5rem 1rem 1rem;
@@ -290,6 +324,14 @@ footer a:hover {
 
   header .btn:hover {
     color: var(--text-highlight-1);
+  }
+
+  .add-field .btn:hover {
+    background: var(--button-color);
+  }
+
+  body.dark-mode .add-field .btn:hover {
+    color: #fff;
   }
 
   .todo-nav ul {
