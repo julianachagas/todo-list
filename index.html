@@ -50,24 +50,14 @@
           />
         </form>
         <nav class="todo-nav">
-          <ul>
-            <li data-target="#all-todos" class="active"><a href="">All</a></li>
-            <li data-target="#pending-todos"><a href="">Pending</a></li>
-            <li data-target="#completed-todos"><a href="">Completed</a></li>
+          <ul class="menu">
+            <li><button id="all-todos" class="active">All</button></li>
+            <li><button id="pending-todos">Pending</button></li>
+            <li><button id="completed-todos">Completed</button></li>
           </ul>
           <button id="clear-list" class="btn">Clear list</button>
         </nav>
-        <ul class="todo-list" id="all-todos">
-          <!-- <li class="todo-item">
-            <label>
-              <input type="checkbox" />
-              <span>to do</span>
-            </label>
-            <button class="delete-btn btn" aria-label="Delete todo">
-              <i class="fa-solid fa-trash-can"></i>
-            </button>
-          </li> -->
-        </ul>
+        <ul class="todo-list"></ul>
       </div>
       <form id="add-todo-form">
         <label for="add-todo" class="visuallyhidden">Add a new todo:</label>
