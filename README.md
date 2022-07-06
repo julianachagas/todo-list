@@ -15,14 +15,14 @@ A to-do list application built with HTML, CSS, and JavaScript. A to-do list is a
 ### Features
 
 - [x] Toggle between light and dark mode
-- [x] Selected mode is stored in the local storage
+- [x] The selected mode is stored in the local storage
 - [x] Add a new task to the list
-  - [ ] Validation for empty input field
-  - [ ] Message when task is successfully added
+  - [x] Show error message if the input field was empty
+  - [x] Show message when task is successfully added
 - [x] The tasks are stored locally (local storage)
 - [x] Delete a task from the list
 - [x] Check the task as completed
-- [x] Clear the list (remove all items)
+- [x] Clear the list (remove all tasks)
 - [x] Search/filter tasks
 - [x] Navigation: show all tasks, completed tasks or pending tasks
 
@@ -38,6 +38,7 @@ A to-do list application built with HTML, CSS, and JavaScript. A to-do list is a
 - Array methods
 - String methods
 - Arrow functions
+- `setTimeout`
 
 ### Useful resources
 
