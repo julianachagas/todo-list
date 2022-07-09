@@ -184,7 +184,7 @@ header .btn {
   margin-right: 1rem;
 }
 
-.todo-item.complete {
+.todo-item.completed {
   text-decoration: line-through;
   color: var(--light-gray-text);
 }
