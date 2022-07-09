@@ -1,25 +1,34 @@
+//selectors
+const toggleThemeButton = document.querySelector('#toggle-theme');
+const addTodoForm = document.forms['add-todo-form'];
+const todoList = document.querySelector('.todo-list');
+const clearListButton = document.querySelector('#clear-list');
+const searchForm = document.forms['search-form'];
+const todoMenu = document.querySelector('.todo-nav .menu');
+
+//event listeners and functions
+
 // toggle dark/light theme
-const toggleTheme = document.querySelector('#toggle-theme');
-toggleTheme.addEventListener('click', () => {
+toggleThemeButton.addEventListener('click', () => {
   document.body.classList.toggle('dark-mode');
   const ariaPressed =
-    toggleTheme.getAttribute('aria-pressed') === 'false' ? 'true' : 'false';
-  toggleTheme.setAttribute('aria-pressed', ariaPressed);
-  const themeIcon = toggleTheme.firstElementChild.classList.contains('fa-moon')
+    toggleThemeButton.getAttribute('aria-pressed') === 'false'
+      ? 'true'
+      : 'false';
+  toggleThemeButton.setAttribute('aria-pressed', ariaPressed);
+  const themeIcon = toggleThemeButton.firstElementChild.classList.contains(
+    'fa-moon'
+  )
     ? 'fa-sun'
     : 'fa-moon';
-  toggleTheme.firstElementChild.className = `fa-solid ${themeIcon}`;
-  //store the theme locally
+  toggleThemeButton.firstElementChild.className = `fa-solid ${themeIcon}`;
   storeTheme();
 });
 
 function storeTheme() {
-  let theme;
-  if (document.body.classList.contains('dark-mode')) {
-    theme = 'dark';
-  } else {
-    theme = 'light';
-  }
+  const theme = document.body.classList.contains('dark-mode')
+    ? 'dark'
+    : 'light';
   localStorage.setItem('theme', theme);
 }
 
@@ -31,10 +40,15 @@ class Todo {
   }
 }
 
-const addTodoForm = document.forms['add-todo-form'];
 addTodoForm.addEventListener('submit', e => {
   e.preventDefault();
-  const todo = e.target.querySelector('#add-todo').value.trim();
+  addTodo();
+  e.target.reset();
+  e.target.querySelector('#add-todo').focus();
+});
+
+function addTodo() {
+  const todo = document.querySelector('#add-todo').value.trim();
   const todoObject = new Todo(todo, 'pending');
   const alertError = document.querySelector('.alert-error');
   const alertSuccess = document.querySelector('.alert-success');
@@ -43,27 +57,18 @@ addTodoForm.addEventListener('submit', e => {
     storeTodo(todoObject);
     hideEmptyListInstructions();
     showTodoWrapper();
-    e.target.reset();
     showAlert(alertSuccess);
   } else {
     showAlert(alertError);
   }
-  e.target.querySelector('#add-todo').focus();
-});
-
-function showAlert(element) {
-  element.style.display = 'block';
-  setTimeout(() => {
-    element.style.display = 'none';
-  }, 3000);
 }
 
-function createNewTodoItem(text) {
+function createNewTodoItem(todo) {
   const todoList = document.querySelector('.todo-list');
   const listItem = document.createElement('li');
   listItem.classList.add('todo-item');
   listItem.innerHTML = `<label><input type="checkbox"><span></span></label><button class="delete-btn btn" aria-label="Delete todo"><i class="fa-solid fa-trash-can"></i></button>`;
-  listItem.querySelector('span').textContent = text;
+  listItem.querySelector('span').textContent = todo;
   todoList.append(listItem);
   return listItem;
 }
@@ -98,30 +103,47 @@ function hideTodoWrapper() {
   document.querySelector('.todo-wrapper').classList.remove('show');
 }
 
-//display todos when pages loads and theme previously selected
+function showAlert(element) {
+  element.style.display = 'block';
+  setTimeout(() => {
+    element.style.display = 'none';
+  }, 3000);
+}
+
+//display theme and todos stored in local storage when page loads
 document.addEventListener('DOMContentLoaded', () => {
+  loadTheme();
+  loadTodos();
+});
+
+function loadTheme() {
   const theme = localStorage.getItem('theme');
   if (theme === 'dark') {
     document.body.classList.add('dark-mode');
+    toggleThemeButton.setAttribute('aria-pressed', 'true');
+    toggleThemeButton.firstElementChild.className = `fa-solid fa-sun`;
   }
-  //check if there are todos stored
+}
+
+function loadTodos() {
   const arrayOfTodos = getTodos();
   if (arrayOfTodos.length !== 0) {
     arrayOfTodos.forEach(todo => {
       const newItem = createNewTodoItem(todo.name);
-      if (todo.status === 'complete') {
-        newItem.classList.add('complete');
+      if (todo.status === 'completed') {
+        newItem.classList.add('completed');
         newItem.querySelector('input').setAttribute('checked', '');
       }
     });
     hideEmptyListInstructions();
     showTodoWrapper();
   }
-});
+}
 
 //delete todos
-const todoList = document.querySelector('.todo-list');
-todoList.addEventListener('click', e => {
+todoList.addEventListener('click', deleteTodo);
+
+function deleteTodo(e) {
   if (e.target.closest('.delete-btn')) {
     const todoItem = e.target.closest('.todo-item');
     const todoName = todoItem.querySelector('span').textContent;
@@ -132,49 +154,48 @@ todoList.addEventListener('click', e => {
       hideTodoWrapper();
     }
   }
-});
+}
 
-function removeTodoFromStorage(text) {
+function removeTodoFromStorage(todoName) {
   const arrayOfTodos = getTodos();
   arrayOfTodos.forEach((todo, index) => {
-    if (todo.name === text) {
+    if (todo.name === todoName) {
       arrayOfTodos.splice(index, 1);
     }
   });
   localStorage.setItem('todos', JSON.stringify(arrayOfTodos));
 }
 
-//mark todo as completed
+//update todo: mark todo as completed
 todoList.addEventListener('change', e => {
   if (e.target.closest('.todo-item label')) {
     const todoItem = e.target.closest('.todo-item');
-    const inputChecked = todoItem.querySelector('input:checked');
-    const todoName = todoItem.querySelector('span').textContent;
-    const activeButton = getActiveNavButton();
-    if (inputChecked) {
-      todoItem.classList.add('complete');
-      changeTodoStatus(todoName, 'complete');
-      if (activeButton === 'pending-todos') {
-        setTimeout(() => {
-          todoItem.classList.add('hide');
-        }, 500);
-      }
-    } else {
-      todoItem.classList.remove('complete');
-      changeTodoStatus(todoName, 'pending');
-      if (activeButton === 'completed-todos') {
-        setTimeout(() => {
-          todoItem.classList.add('hide');
-        }, 500);
-      }
-    }
+    updateTodo(todoItem);
   }
 });
 
-function changeTodoStatus(text, status) {
+function updateTodo(todoItem) {
+  const todoName = todoItem.querySelector('span').textContent;
+  todoItem.classList.toggle('completed');
+  const status = todoItem.classList.contains('completed')
+    ? 'completed'
+    : 'pending';
+  storeTodoStatus(todoName, status);
+  const activeButton = getActiveNavButton();
+  if (
+    (activeButton === 'pending-todos' && status === 'completed') ||
+    (activeButton === 'completed-todos' && status === 'pending')
+  ) {
+    setTimeout(() => {
+      todoItem.classList.add('hide');
+    }, 500);
+  }
+}
+
+function storeTodoStatus(name, status) {
   const arrayOfTodos = getTodos();
   arrayOfTodos.forEach(todo => {
-    if (todo.name === text) {
+    if (todo.name === name) {
       todo.status = status;
     }
   });
@@ -192,8 +213,7 @@ function getActiveNavButton() {
   return activeButton;
 }
 
-//clear all todos from the list
-const clearListButton = document.querySelector('#clear-list');
+//clear all todos from the list and remove from local storage
 clearListButton.addEventListener('click', () => {
   document.querySelector('.todo-list').replaceChildren('');
   showEmptyListInstructions();
@@ -202,44 +222,49 @@ clearListButton.addEventListener('click', () => {
 });
 
 //search/filter todos
-const searchForm = document.forms['search-form'];
 searchForm.addEventListener('submit', e => {
   e.preventDefault();
 });
 
-searchForm.addEventListener('input', e => {
-  const term = e.target.value.trim().toLowerCase();
+searchForm.addEventListener('input', filterTodos);
+
+function filterTodos(e) {
+  const searchWord = e.target.value.trim().toLowerCase();
   const activeButton = getActiveNavButton();
-  let todoItems;
-  if (activeButton === 'completed-todos') {
-    todoItems = document.querySelectorAll('.todo-item.complete');
-  } else if (activeButton === 'pending-todos') {
-    todoItems = document.querySelectorAll('.todo-item:not(.complete)');
-  } else {
-    todoItems = document.querySelectorAll('.todo-item');
-  }
+  const selector =
+    activeButton === 'completed-todos'
+      ? '.todo-item.completed'
+      : activeButton === 'pending-todos'
+      ? '.todo-item:not(.completed)'
+      : '.todo-item';
+  const todoItems = document.querySelectorAll(`${selector}`);
   todoItems.forEach(item => {
     const todoName = item.textContent.toLowerCase();
-    item.classList.toggle('hide', !todoName.includes(term));
+    item.classList.toggle('hide', !todoName.includes(searchWord));
   });
-});
+}
 
-//navigation: show all tasks, completed tasks or pending tasks
-const menu = document.querySelector('.todo-nav .menu');
-menu.addEventListener('click', e => {
-  const buttonID = e.target.id;
-  const todoItems = document.querySelectorAll('.todo-item');
-  todoItems.forEach(item => {
-    if (buttonID === 'all-todos') {
-      item.classList.remove('hide');
-    } else if (buttonID === 'pending-todos') {
-      item.classList.toggle('hide', item.classList.contains('complete'));
-    } else if (buttonID === 'completed-todos') {
-      item.classList.toggle('hide', !item.classList.contains('complete'));
-    }
-  });
-  const navigationButtons = document.querySelectorAll('.todo-nav ul button');
-  navigationButtons.forEach(button => {
-    button.classList.toggle('active', e.target === button);
-  });
+//navigation: show all todos, completed todos or pending todos
+todoMenu.addEventListener('click', e => {
+  if (e.target.tagName === 'BUTTON') {
+    const buttonID = e.target.id;
+    const todoItems = document.querySelectorAll('.todo-item');
+    todoItems.forEach(item => {
+      switch (buttonID) {
+        case 'all-todos':
+          item.classList.remove('hide');
+          break;
+        case 'pending-todos':
+          item.classList.toggle('hide', item.classList.contains('completed'));
+          break;
+        case 'completed-todos':
+          item.classList.toggle('hide', !item.classList.contains('completed'));
+          break;
+      }
+    });
+    const navigationButtons = document.querySelectorAll('.todo-nav ul button');
+    navigationButtons.forEach(button => {
+      button.classList.toggle('active', e.target === button);
+    });
+  }
 });
